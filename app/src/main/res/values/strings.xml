@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">BM Online</string>
+    <string name="log_in">Log in</string>
+    <string name="list_of_accounts">List Of Accounts</string>
+    <string name="balance">Balance</string>
+    <string name="details">Details</string>
+</resources>
