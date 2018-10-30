@@ -18,6 +18,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 
 import org.jsoup.Jsoup;
@@ -30,11 +32,18 @@ import java.util.List;
 
 import mohalim.android.bmonline.Adapters.AccountsAdapter;
 import mohalim.android.bmonline.Models.Account;
+import mohalim.android.bmonline.Utils.BalanceDialog;
+import mohalim.android.bmonline.Utils.LoadingDialog;
 import mohalim.android.bmonline.Utils.Utils;
+import mohalim.android.bmonline.Utils.chooseDetails;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements AccountsAdapter.AccountRecyclerClick,
+        chooseDetails.OnClickShowDetails {
+
     String usernameValue = "";
     String passwordValue = "";
+    private final String BASE_URL= "https://www.banquemisr.com.eg/onlineservices/onlinebanking/";
     private final String LOGIN_URL= "https://www.banquemisr.com.eg/onlineservices/onlinebanking/Login.aspx";
     private final String CHANGE_USERNAME_VALUE_JS = "document.getElementById(\"txtId\").value = \"";
     private final String CHANGE_PASSWORD_VALUE_JS = "document.getElementById(\"txtpwd\").value = \"";
@@ -50,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
 
     private int pageStatus = LOGIN_STATUS;
 
+    public static chooseDetails chooseDetails;
+    public static int dateFromDay = 0;
+    public static int dateFromMonth = 0;
+    public static int dateFromYear = 0;
+
+    public static int dateToDay = 0;
+    public static int dateToMonth = 0;
+    public static int dateToYear = 0;
 
     ConstraintLayout loginConstraint,
             mainConstraint,
@@ -57,11 +74,13 @@ public class MainActivity extends AppCompatActivity {
             detailschooserConstraint,
             detailsContainerConstraint;
 
-
-
     WebView myWebView;
-    AlertDialog.Builder alertBuilder;
-    AlertDialog alertDialog;
+
+    List<Account> accounts;
+
+    LoadingDialog loadingDialog;
+    ProgressBar loadingProgressBar;
+
 
     EditText usernameET, passwordET;
     Button loginBtn;
@@ -82,9 +101,12 @@ public class MainActivity extends AppCompatActivity {
         detailschooserConstraint = findViewById(R.id.detail_screen_chooser);
         detailsContainerConstraint = findViewById(R.id.detail_screen_container);
 
-        alertBuilder = Utils.getAlertBuilder(this, "رجاء الانتظار...","جاري الاتصال بالانترنت");
-        alertBuilder.setCancelable(false);
-        alertDialog = alertBuilder.show();
+        loadingProgressBar = findViewById(R.id.login_progress_bar);
+
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.show();
+        loadingDialog.setMessageTV("جاري تحميل البيانات");
+
 
 
         makeLoginVisible();
@@ -94,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         /**
          * Instintiate the web view
          */
-        final WebView myWebView = (WebView) findViewById(R.id.bmonline_webview);
+        myWebView = (WebView) findViewById(R.id.bmonline_webview);
         myWebView.loadUrl(LOGIN_URL);
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -106,17 +128,22 @@ public class MainActivity extends AppCompatActivity {
         myWebView.setWebViewClient(new WebViewClient() {
 
             public void onPageFinished(final WebView view, String url) {
-
+                Toast.makeText(MainActivity.this, "finished", Toast.LENGTH_SHORT).show();
 
                 // After Login page load completed
                 if (pageStatus == LOGIN_STATUS){
-                    alertDialog.dismiss();
+                    loadingDialog.dismiss();
 
                     loginBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            loadingProgressBar.setVisibility(View.VISIBLE);
+
                             usernameValue = usernameET.getText().toString();
                             passwordValue = passwordET.getText().toString();
+
+                            String usernameValue = "olb18715291";
+                            String passwordValue = "Mm01147773369";
 
 
                             view.addJavascriptInterface(new LoadAccountListener(), "HTMLOUT");
@@ -125,12 +152,16 @@ public class MainActivity extends AppCompatActivity {
                                 view.evaluateJavascript(CHANGE_PASSWORD_VALUE_JS + passwordValue + END_OF_VALUE, null);
                                 view.evaluateJavascript(SUBMIT_LOGIN_FORM, null);
 
+                                loginBtn.setEnabled(false);
+
+
+
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         view.evaluateJavascript(GET_HTML_FROM_ACCOUNTS, null);
                                     }
-                                }, 10000);
+                                }, 5000);
 
 
 
@@ -139,20 +170,37 @@ public class MainActivity extends AppCompatActivity {
                                 view.loadUrl("javascript: "+ CHANGE_PASSWORD_VALUE_JS + passwordValue + END_OF_VALUE);
                                 view.loadUrl("javascript: "+ SUBMIT_LOGIN_FORM);
 
+                                loginBtn.setEnabled(false);
+
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         view.loadUrl("javascript: "+ GET_HTML_FROM_ACCOUNTS);
                                     }
-                                }, 10000);
+                                }, 5000);
 
                             }
+
 
 
                         }
                     });
 
+                }else if (pageStatus == BALANCE_STATUS){
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.evaluateJavascript(GET_HTML_FROM_ACCOUNTS, null);
+                        }
+                    }, 5000);
+
+                }else if (pageStatus == DETAILS_CHOOSE_STATUS){
+                    loadingDialog.dismiss();
+                    chooseDetails = new chooseDetails(MainActivity.this, MainActivity.this);
+                    chooseDetails.setFm(getSupportFragmentManager());
+                    chooseDetails.show();
                 }
+
 
 
 
@@ -188,6 +236,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
     /**
      * JavaScriptInterface to get Html From the Web View;
      */
@@ -198,11 +248,12 @@ public class MainActivity extends AppCompatActivity {
         {
             if (pageStatus == LOGIN_STATUS){
                 if (html.contains("Accounts")){
+
                     Document doc = Jsoup.parse(html);
                     Elements accountsSpanElements = doc.select("#lblAccountsTable");
                     Element accountsSpanElement = accountsSpanElements.first();
                     Elements accountRows = accountsSpanElement.select("table tbody tr");
-                    final List<Account> accounts = new ArrayList<>();
+                    accounts = new ArrayList<>();
 
                     int ar = 0;
                     for (Element accountRow: accountRows){
@@ -239,10 +290,12 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            loadingProgressBar.setVisibility(View.INVISIBLE);
+                            loginBtn.setEnabled(true);
                             makeMainVisible();
 
                             RecyclerView accountRecyclerView = findViewById(R.id.accounts_recycler_view);
-                            AccountsAdapter accountsAdapter = new AccountsAdapter();
+                            AccountsAdapter accountsAdapter = new AccountsAdapter(MainActivity.this);
                             LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
                             accountRecyclerView.setAdapter(accountsAdapter);
                             accountRecyclerView.setLayoutManager(layoutManager);
@@ -262,6 +315,47 @@ public class MainActivity extends AppCompatActivity {
                     alertDialog.setMessage("Wrong credintial");
                     alertDialog.show();
                 }
+
+                /**
+                 * if the balance Requested and page loaded
+                 */
+            }else if (pageStatus == BALANCE_STATUS){
+
+                Document doc = Jsoup.parse(html);
+                Element balnceElement = doc.select(".BGTableRightCellCommon").first();
+                Account account = new Account();
+
+                Elements accountDetailsRows = balnceElement.select("td");
+                int ab = 0;
+                for (Element element: accountDetailsRows){
+                    if (ab == 1){
+                        int adr = 0;
+
+                        for (Element accountDetailsRow: accountDetailsRows){
+
+                            if (adr == 0){
+                                account.setAccountNumber(accountDetailsRow.text());
+                            }else if (adr == 1){
+                                account.setCurrency(accountDetailsRow.text());
+                            }else if (adr == 2){
+                                account.setBalance(accountDetailsRow.text());
+                            }
+
+                            adr++;
+                        }
+                    }
+                    ab++;
+                }
+                loadingDialog.dismiss();
+
+                BalanceDialog balanceDialog = new BalanceDialog(MainActivity.this);
+                balanceDialog.show();
+                balanceDialog.setItems(
+                        account.getBalance(),
+                        account.getCurrency(),
+                        account.getAccountNumber()
+                        );
+
             }
 
 
@@ -269,6 +363,32 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
+    @Override
+    public void onClickShowDetails() {
+        chooseDetails.dismiss();
+    }
+
+
+    @Override
+    public void onClick(String click, int type, int position) {
+        if (type == 1){
+            pageStatus = BALANCE_STATUS;
+            myWebView.loadUrl(BASE_URL + click);
+            loadingDialog.show();
+            loadingDialog.setMessageTV("جاري تحميل البيانات");
+
+
+        }else if (type == 2){
+            pageStatus = DETAILS_CHOOSE_STATUS;
+
+            loadingDialog.show();
+            loadingDialog.setMessageTV("جاري تحميل البيانات");
+            myWebView.loadUrl(BASE_URL+accounts.get(position).getDetail());
+
+        }
+    }
+
 
     /**
      * Visiblity of screens
