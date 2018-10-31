@@ -50,13 +50,13 @@ public class DatePickerFragment extends DialogFragment
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         if (type == DATE_FROM){
-            MainActivity.chooseDetails.dateFrom.setText("Date from: "+day+" / "+ month + " / "+ year);
+            MainActivity.chooseDetails.dateFrom.setText("Date from: "+day+" / "+ (month+1) + " / "+ year);
             MainActivity.dateFromDay = day;
             MainActivity.dateFromMonth = month;
             MainActivity.dateFromYear = year;
 
         }else if (type == DATE_TO){
-            MainActivity.chooseDetails.dateTo.setText("Date from: "+day+" / "+ month + " / "+ year);
+            MainActivity.chooseDetails.dateTo.setText("Date TO: "+day+" / "+ (month+1) + " / "+ year);
             MainActivity.dateToDay = day;
             MainActivity.dateToMonth = month;
             MainActivity.dateToYear = year;

@@ -5,4 +5,6 @@
     <string name="balance">Balance</string>
     <string name="details">Details</string>
     <string name="show_details">Show Details</string>
+    <string name="next">Next</string>
+    <string name="prev">Prev.</string>
 </resources>
