@@ -451,6 +451,8 @@ public class MainActivity extends AppCompatActivity
             t++;
         }
 
+        
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
