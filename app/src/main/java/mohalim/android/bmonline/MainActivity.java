@@ -18,9 +18,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 
 
@@ -38,7 +38,6 @@ import mohalim.android.bmonline.Models.Account;
 import mohalim.android.bmonline.Models.Transaction;
 import mohalim.android.bmonline.Utils.BalanceDialog;
 import mohalim.android.bmonline.Utils.LoadingDialog;
-import mohalim.android.bmonline.Utils.Utils;
 import mohalim.android.bmonline.Utils.chooseDetails;
 
 public class MainActivity extends AppCompatActivity
@@ -88,21 +87,20 @@ public class MainActivity extends AppCompatActivity
     public static int dateToYear = 0;
 
     ConstraintLayout loginConstraint,
-            mainConstraint,
-            balanceConstraint,
-            detailschooserConstraint;
+            mainConstraint;
 
     LinearLayout detailsContainerConstraint;
 
     WebView myWebView;
 
-    List<Account> accounts;
 
+    List<Account> accounts;
     LoadingDialog loadingDialog;
     ProgressBar loadingProgressBar;
 
 
     EditText usernameET, passwordET;
+    Switch rememberSw;
     Button loginBtn, startArrow, endArrow;
 
     TransactionAdapter transactionAdapter;
@@ -118,6 +116,7 @@ public class MainActivity extends AppCompatActivity
 
         usernameET = findViewById(R.id.username_et);
         passwordET = findViewById(R.id.password_et);
+        rememberSw = findViewById(R.id.remember_sw);
         loginBtn = findViewById(R.id.login);
 
         loginConstraint = findViewById(R.id.login_container);
@@ -128,7 +127,7 @@ public class MainActivity extends AppCompatActivity
 
         loadingDialog = new LoadingDialog(this);
         loadingDialog.show();
-        loadingDialog.setMessageTV("جاري تحميل البيانات");
+        loadingDialog.setMessageTV(getResources().getString(R.string.data_loading));
 
 
 
@@ -195,55 +194,91 @@ public class MainActivity extends AppCompatActivity
         if (dateFromDay > 0){
 
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                myWebView.evaluateJavascript(ADD_FROM_DATE_DAY + (dateFromDay - 1) + ";", null);
-                myWebView.evaluateJavascript(ADD_FROM_DATE_MONTH + dateFromMonth + ";", null);
+                myWebView.evaluateJavascript(
+                        ADD_FROM_DATE_DAY + (dateFromDay - 1) + getResources().getString(R.string.simi),
+                        null);
+                myWebView.evaluateJavascript(
+                        ADD_FROM_DATE_MONTH + dateFromMonth + getResources().getString(R.string.simi),
+                        null);
 
                 if (dateFromYear == 2017){
-                    myWebView.evaluateJavascript(ADD_FROM_DATE_YEAR + 0 + ";", null);
+                    myWebView.evaluateJavascript(ADD_FROM_DATE_YEAR + 0 + getResources().getString(R.string.simi),
+                            null);
                 }else if (dateFromYear == 2018){
-                    myWebView.evaluateJavascript(ADD_FROM_DATE_YEAR + 1 + ";", null);
+                    myWebView.evaluateJavascript(ADD_FROM_DATE_YEAR + 1 + getResources().getString(R.string.simi),
+                            null);
                 }
 
-                myWebView.evaluateJavascript(ADD_TO_DATE_DAY + (dateToDay - 1) + ";", null);
-                myWebView.evaluateJavascript(ADD_TO_DATE_MONTH + dateToMonth + ";", null);
+                myWebView.evaluateJavascript(ADD_TO_DATE_DAY + (dateToDay - 1) + getResources().getString(R.string.simi),
+                        null);
+                myWebView.evaluateJavascript(ADD_TO_DATE_MONTH + dateToMonth + getResources().getString(R.string.simi),
+                        null);
 
                 if (dateToYear == 2017){
-                    myWebView.evaluateJavascript(ADD_TO_DATE_YEAR + 0 + ";", null);
+                    myWebView.evaluateJavascript(ADD_TO_DATE_YEAR + 0 + getResources().getString(R.string.simi),
+                            null);
                 }else if (dateToYear == 2018){
-                    myWebView.evaluateJavascript(ADD_TO_DATE_YEAR + 1 + ";", null);
+                    myWebView.evaluateJavascript(ADD_TO_DATE_YEAR + 1 + getResources().getString(R.string.simi),
+                            null);
                 }
 
                 loadingDialog.show();
-                loadingDialog.setMessageTV("جاري تحميل البيانات");
+                loadingDialog.setMessageTV(getResources().getString(R.string.data_loading));
 
                 pageStatus = DETAILS_STATUS;
                 myWebView.evaluateJavascript(SUBMIT_DETAILS_FORM, null);
 
             } else {
-                myWebView.loadUrl("javascript: "+ ADD_FROM_DATE_DAY + (dateFromDay - 1) + ";");
-                myWebView.loadUrl("javascript: "+ ADD_FROM_DATE_MONTH + dateFromMonth + ";");
+                myWebView.loadUrl(
+                        getResources().getString(R.string.js_start)
+                        + ADD_FROM_DATE_DAY + (dateFromDay - 1)
+                                + getResources().getString(R.string.simi));
+                myWebView.loadUrl(
+                        getResources().getString(R.string.js_start)
+                                + ADD_FROM_DATE_MONTH + dateFromMonth
+                                + getResources().getString(R.string.simi));
 
                 if (dateFromYear == 2017){
-                    myWebView.loadUrl("javascript: "+ ADD_FROM_DATE_MONTH + 0 + ";");
+                    myWebView.loadUrl(
+                            getResources().getString(R.string.js_start)
+                                    + ADD_FROM_DATE_MONTH + 0
+                                    + getResources().getString(R.string.simi));
                 }else if (dateFromYear == 2018){
-                    myWebView.loadUrl("javascript: "+ ADD_FROM_DATE_MONTH + 1 + ";");
+                    myWebView.loadUrl(
+                            getResources().getString(R.string.js_start)
+                                    + ADD_FROM_DATE_MONTH + 1
+                                    + getResources().getString(R.string.simi));
                 }
 
-                myWebView.loadUrl("javascript: "+ ADD_TO_DATE_DAY + (dateFromDay - 1) + ";");
-                myWebView.loadUrl("javascript: "+ ADD_TO_DATE_MONTH + dateFromMonth + ";");
+                myWebView.loadUrl(
+                        getResources().getString(R.string.js_start)
+                                + ADD_TO_DATE_DAY + (dateFromDay - 1)
+                                + ";");
+                myWebView.loadUrl(
+                        getResources().getString(R.string.js_start)
+                                + ADD_TO_DATE_MONTH + dateFromMonth
+                                + getResources().getString(R.string.simi));
 
                 if (dateToYear == 2017){
-                    myWebView.loadUrl("javascript: "+ ADD_TO_DATE_YEAR + 0 + ";");
+                    myWebView.loadUrl(
+                            getResources().getString(R.string.js_start)
+                                    + ADD_TO_DATE_YEAR + 0
+                                    + getResources().getString(R.string.simi));
                 }else if (dateToYear == 2018){
-                    myWebView.loadUrl("javascript: "+ ADD_TO_DATE_YEAR + 1 + ";");
+                    myWebView.loadUrl(
+                            getResources().getString(R.string.js_start)
+                                    + ADD_TO_DATE_YEAR + 1
+                                    + getResources().getString(R.string.simi));
                 }
 
                 loadingDialog.show();
-                loadingDialog.setMessageTV("جاري تحميل البيانات");
+                loadingDialog.setMessageTV(getResources().getString(R.string.data_loading));
 
                 pageStatus = DETAILS_STATUS;
 
-                myWebView.loadUrl("javascript: "+ SUBMIT_DETAILS_FORM);
+                myWebView.loadUrl(
+                        getResources().getString(R.string.js_start)
+                                + SUBMIT_DETAILS_FORM);
 
 
             }
@@ -263,14 +298,14 @@ public class MainActivity extends AppCompatActivity
             pageStatus = BALANCE_STATUS;
             myWebView.loadUrl(BASE_URL + click);
             loadingDialog.show();
-            loadingDialog.setMessageTV("جاري تحميل البيانات");
+            loadingDialog.setMessageTV(getResources().getString(R.string.data_loading));
 
 
         }else if (type == 2){
             pageStatus = DETAILS_CHOOSE_STATUS;
 
             loadingDialog.show();
-            loadingDialog.setMessageTV("جاري تحميل البيانات");
+            loadingDialog.setMessageTV(getResources().getString(R.string.data_loading));
             myWebView.loadUrl(BASE_URL+accounts.get(position).getDetail());
 
         }
@@ -304,6 +339,9 @@ public class MainActivity extends AppCompatActivity
     private void processHtmlAfterLogin(String html) {
 
         if (html.contains("Accounts")){
+            if (rememberSw.isActivated()){
+                Toast.makeText(this, "remember", Toast.LENGTH_SHORT).show();
+            }
 
             Document doc = Jsoup.parse(html);
             Elements accountsSpanElements = doc.select("#lblAccountsTable");
@@ -356,6 +394,7 @@ public class MainActivity extends AppCompatActivity
                     accountRecyclerView.setAdapter(accountsAdapter);
                     accountRecyclerView.setLayoutManager(layoutManager);
 
+
                     accountsAdapter.setAccounts(accounts);
                     accountsAdapter.notifyDataSetChanged();
                 }
@@ -369,7 +408,7 @@ public class MainActivity extends AppCompatActivity
         }else{
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
             loginBtn.setEnabled(true);
-            alertDialog.setMessage("Wrong credintial");
+            alertDialog.setMessage(getResources().getString(R.string.wrong_credintial));
             alertDialog.show();
         }
 
@@ -444,7 +483,7 @@ public class MainActivity extends AppCompatActivity
                                 getHtmlAfterDetailsLoading(myWebView);
 
                             } else {
-                                myWebView.loadUrl("javascript: "+ LOAD_NEXT_PAGE );
+                                myWebView.loadUrl(getResources().getString(R.string.js_start)+ LOAD_NEXT_PAGE );
                                 getHtmlAfterDetailsLoading(myWebView);
 
                             }
@@ -473,7 +512,7 @@ public class MainActivity extends AppCompatActivity
                                 getHtmlAfterDetailsLoading(myWebView);
 
                             } else {
-                                myWebView.loadUrl("javascript: "+ LOAD_PREV_PAGE );
+                                myWebView.loadUrl(getResources().getString(R.string.js_start)+ LOAD_PREV_PAGE );
                                 getHtmlAfterDetailsLoading(myWebView);
 
                             }
@@ -542,7 +581,7 @@ public class MainActivity extends AppCompatActivity
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    view.loadUrl("javascript: "+ GET_HTML);
+                    view.loadUrl(getResources().getString(R.string.js_start)+ GET_HTML);
                 }
             }, 10000);
 
@@ -571,14 +610,25 @@ public class MainActivity extends AppCompatActivity
                 usernameValue = usernameET.getText().toString();
                 passwordValue = passwordET.getText().toString();
 
-  
+                //String usernameValue = "olb18715291";
+                //String passwordValue = "Mm01147773369";
 
 
                 view.addJavascriptInterface(new LoadAccountListener(), "HTMLOUT");
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-                    view.evaluateJavascript(CHANGE_USERNAME_VALUE_JS + usernameValue + END_OF_VALUE, null);
-                    view.evaluateJavascript(CHANGE_PASSWORD_VALUE_JS + passwordValue + END_OF_VALUE, null);
-                    view.evaluateJavascript(SUBMIT_LOGIN_FORM, null);
+                    view.evaluateJavascript(
+                            CHANGE_USERNAME_VALUE_JS
+                                    + usernameValue
+                                    + END_OF_VALUE,
+                            null);
+                    view.evaluateJavascript(
+                            CHANGE_PASSWORD_VALUE_JS
+                                    + passwordValue
+                                    + END_OF_VALUE,
+                            null);
+                    view.evaluateJavascript(
+                            SUBMIT_LOGIN_FORM,
+                            null);
 
                     loginBtn.setEnabled(false);
 
@@ -589,23 +639,32 @@ public class MainActivity extends AppCompatActivity
                         public void run() {
                             view.evaluateJavascript(GET_HTML, null);
                         }
-                    }, 5000);
+                    }, 8000);
 
 
 
                 } else {
-                    view.loadUrl("javascript: "+ CHANGE_USERNAME_VALUE_JS + usernameValue + END_OF_VALUE );
-                    view.loadUrl("javascript: "+ CHANGE_PASSWORD_VALUE_JS + passwordValue + END_OF_VALUE);
-                    view.loadUrl("javascript: "+ SUBMIT_LOGIN_FORM);
+                    view.loadUrl(getResources().getString(R.string.js_start)
+                            + CHANGE_USERNAME_VALUE_JS
+                            + usernameValue
+                            + END_OF_VALUE );
+
+                    view.loadUrl(getResources().getString(R.string.js_start)
+                            + CHANGE_PASSWORD_VALUE_JS
+                            + passwordValue
+                            + END_OF_VALUE);
+                    view.loadUrl(getResources().getString(R.string.js_start)
+                            + SUBMIT_LOGIN_FORM);
 
                     loginBtn.setEnabled(false);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            view.loadUrl("javascript: "+ GET_HTML);
+                            view.loadUrl(getResources().getString(R.string.js_start)
+                                    + GET_HTML);
                         }
-                    }, 5000);
+                    }, 8000);
 
                 }
 
@@ -629,7 +688,7 @@ public class MainActivity extends AppCompatActivity
         if (pageStatus == DETAILS_STATUS){
             makeMainVisible();
             transactions.clear();
-
+            pageStatus = MAIN_PAGE_STATUS;
         }else {
             super.onBackPressed();
         }
