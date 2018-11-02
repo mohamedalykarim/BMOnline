@@ -451,7 +451,7 @@ public class MainActivity extends AppCompatActivity
             t++;
         }
 
-        
+
 
         runOnUiThread(new Runnable() {
             @Override
@@ -611,9 +611,7 @@ public class MainActivity extends AppCompatActivity
 
                 usernameValue = usernameET.getText().toString();
                 passwordValue = passwordET.getText().toString();
-
-                //String usernameValue = "olb18715291";
-                //String passwordValue = "Mm01147773369";
+                
 
 
                 view.addJavascriptInterface(new LoadAccountListener(), "HTMLOUT");
