@@ -13,7 +13,7 @@
         android:layout_height="19dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Account Number: "
+        android:text="@string/account_number"
         android:textColor="@color/colorPrimary"
         android:textSize="12sp"
         android:textStyle="bold"
@@ -26,9 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Account Number "
         android:textColor="@color/colorPrimary"
-        android:textSize="11sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
@@ -40,14 +39,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/logo"
+        android:contentDescription="@string/logo" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Your Balance is: "
+        android:text="@string/your_balance_is"
         android:textColor="@color/colorPrimary"
         android:textSize="12sp"
         android:textStyle="bold"

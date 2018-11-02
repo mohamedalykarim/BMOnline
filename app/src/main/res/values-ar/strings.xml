@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">بنك مصر اون لاين</string>
+    <string name="log_in">تسجيل الدخول</string>
+    <string name="list_of_accounts">قائمة الحسابات</string>
+    <string name="balance">الرصيد</string>
+    <string name="details">التفاصيل</string>
+    <string name="show_details">عرض التفاصيل</string>
+    <string name="next">التالى</string>
+    <string name="prev">السابق</string>
+    <string name="olb">OLB</string>
+    <string name="transactions">حركات الحساب</string>
+    <string name="account_number">رقم الحساب:</string>
+    <string name="currency">عملة الحساب:</string>
+    <string name="your_balance_is">رصيدك الحالى هو: </string>
+    <string name="date_from">التاريخ من !</string>
+    <string name="date_to">التاريخ الى !</string>
+    <string name="description">الوصف</string>
+    <string name="date">التاريخ: </string>
+    <string name="value_date">تاريخ القيمة: </string>
+    <string name="debit">مدين: </string>
+    <string name="credit">دائن: </string>
+    <string name="data_loading">جاري تحميل البيانات..</string>
+    <string name="wrong_credintial">يوجد خطا باسم المستخدم وكلمة المرور رجاء حاول مرة اخري</string>
+    <string name="remember_username_and_password">تذكر اسم المستخدم وكلمة المرور</string>
+</resources>

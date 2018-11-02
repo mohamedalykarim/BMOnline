@@ -7,4 +7,25 @@
     <string name="show_details">Show Details</string>
     <string name="next">Next</string>
     <string name="prev">Prev.</string>
+    <string name="olb">OLB</string>
+    <string name="transactions">Transactions</string>
+    <string name="passowrd">Passowrd</string>
+    <string name="username">Username</string>
+    <string name="login_page_icon">Login page icon</string>
+    <string name="account_number">Account Number:</string>
+    <string name="currency">Currency:</string>
+    <string name="logo">Logo</string>
+    <string name="your_balance_is">Your Balance is:</string>
+    <string name="date_from">Date From</string>
+    <string name="date_to">Date To</string>
+    <string name="description">description</string>
+    <string name="date">Date:</string>
+    <string name="value_date">Value Date: </string>
+    <string name="debit">Debit:</string>
+    <string name="credit">Credit:</string>
+    <string name="data_loading">Data is Loading..</string>
+    <string name="simi">;</string>
+    <string name="js_start">javascript:</string>
+    <string name="wrong_credintial">Credintial is wrong please try Again</string>
+    <string name="remember_username_and_password">Remember username and password</string>
 </resources>
