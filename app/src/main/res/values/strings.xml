@@ -28,4 +28,8 @@
     <string name="js_start">javascript:</string>
     <string name="wrong_credintial">Credintial is wrong please try Again</string>
     <string name="remember_username_and_password">Remember username and password</string>
+    <string name="please_enter_username_and_password">Please Type Username And Password</string>
+    <string name="please_enter_username">Please Type The Username</string>
+    <string name="please_enter_password">Please Type The Password</string>
+    <string name="designed">This app designed and developed by Mohamed ALi</string>
 </resources>

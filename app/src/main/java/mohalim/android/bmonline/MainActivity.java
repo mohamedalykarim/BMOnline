@@ -2,6 +2,8 @@ package mohalim.android.bmonline;
 
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +19,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -37,6 +40,7 @@ import mohalim.android.bmonline.Adapters.TransactionAdapter;
 import mohalim.android.bmonline.Models.Account;
 import mohalim.android.bmonline.Models.Transaction;
 import mohalim.android.bmonline.Utils.BalanceDialog;
+import mohalim.android.bmonline.Utils.CredentialsSharedPrefrences;
 import mohalim.android.bmonline.Utils.LoadingDialog;
 import mohalim.android.bmonline.Utils.chooseDetails;
 
@@ -101,10 +105,12 @@ public class MainActivity extends AppCompatActivity
 
     EditText usernameET, passwordET;
     Switch rememberSw;
+    boolean isRemember = false;
     Button loginBtn, startArrow, endArrow;
 
     TransactionAdapter transactionAdapter;
     List<Transaction> transactions;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,12 +122,43 @@ public class MainActivity extends AppCompatActivity
 
         usernameET = findViewById(R.id.username_et);
         passwordET = findViewById(R.id.password_et);
-        rememberSw = findViewById(R.id.remember_sw);
         loginBtn = findViewById(R.id.login);
 
         loginConstraint = findViewById(R.id.login_container);
         mainConstraint = findViewById(R.id.main_screen_container);
         detailsContainerConstraint = findViewById(R.id.detail_screen_container);
+
+        rememberSw = findViewById(R.id.remember_sw);
+        rememberSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    isRemember = true;
+                }else {
+                    isRemember = false;
+                    CredentialsSharedPrefrences.setUsernameValue(MainActivity.this,"");
+                    CredentialsSharedPrefrences.setPasswordValue(MainActivity.this,"");
+
+                }
+            }
+        });
+
+        /**
+         * Retrieve username and password
+         */
+        String usernameRemem = CredentialsSharedPrefrences.getUsernameValue(this);
+        String passwordRemem = CredentialsSharedPrefrences.getPasswordValue(this);
+
+        if (usernameRemem != null && passwordRemem != null){
+            if (!usernameRemem.equals("") && !passwordRemem.equals("")){
+                rememberSw.setChecked(true);
+                isRemember = true;
+                usernameET.setText(usernameRemem);
+                passwordET.setText(passwordRemem);
+            }
+        }
+
+
 
         loadingProgressBar = findViewById(R.id.login_progress_bar);
 
@@ -162,6 +199,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
         makeWebAlertAndroid();
+
     }
 
 
@@ -339,9 +377,12 @@ public class MainActivity extends AppCompatActivity
     private void processHtmlAfterLogin(String html) {
 
         if (html.contains("Accounts")){
-            if (rememberSw.isActivated()){
-                Toast.makeText(this, "remember", Toast.LENGTH_SHORT).show();
+            if (isRemember){
+                CredentialsSharedPrefrences.setUsernameValue(this,usernameET.getText().toString());
+                CredentialsSharedPrefrences.setPasswordValue(this,passwordET.getText().toString());
+
             }
+
 
             Document doc = Jsoup.parse(html);
             Elements accountsSpanElements = doc.select("#lblAccountsTable");
@@ -607,11 +648,22 @@ public class MainActivity extends AppCompatActivity
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (usernameET.getText().toString().equals("") && passwordET.getText().toString().equals("")){
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.please_enter_username_and_password), Toast.LENGTH_SHORT).show();
+                    return;
+                }else if (usernameET.getText().toString().equals("") && !passwordET.getText().toString().equals("")){
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.please_enter_username), Toast.LENGTH_SHORT).show();
+                    return;
+                }else if (!usernameET.getText().toString().equals("") && passwordET.getText().toString().equals("")){
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.please_enter_password), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 loadingProgressBar.setVisibility(View.VISIBLE);
 
                 usernameValue = usernameET.getText().toString();
                 passwordValue = passwordET.getText().toString();
-                
+
 
 
                 view.addJavascriptInterface(new LoadAccountListener(), "HTMLOUT");
@@ -716,5 +768,12 @@ public class MainActivity extends AppCompatActivity
                 return true;
             }
         });
+    }
+
+    public void mohamedALiProfile(View view) {
+        String url = "https://www.facebook.com/Ma7aMaD.3Li";
+        Intent i = new Intent(Intent.ACTION_VIEW);
+        i.setData(Uri.parse(url));
+        startActivity(i);
     }
 }

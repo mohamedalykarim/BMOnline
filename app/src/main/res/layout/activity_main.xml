@@ -70,12 +70,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@color/colorPrimary"
             android:paddingTop="20dp"
             android:paddingBottom="20dp"
             android:text="@string/log_in"
             android:textColor="#dadada"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/textView6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/login_progress_bar" />
@@ -138,6 +139,21 @@
             app:layout_constraintStart_toEndOf="@+id/remember_sw"
             app:layout_constraintTop_toTopOf="@+id/remember_sw" />
 
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:onClick="mohamedALiProfile"
+            android:text="@string/designed"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
 
     </android.support.constraint.ConstraintLayout>
 
@@ -145,7 +161,7 @@
         android:id="@+id/main_screen_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_container">
@@ -169,7 +185,6 @@
             android:id="@+id/accounts_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/list_of_account_tv">
 
@@ -200,7 +215,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight=".92"
-            android:background="@color/colorAccent">
+            android:background="@color/colorPrimaryDark"
+            android:padding="5dp">
 
             <Button
                 android:id="@+id/end_arrow"
@@ -208,8 +224,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="20dp"
+                android:background="@color/colorAccent"
                 android:padding="5dp"
                 android:text="@string/next"
+                android:textColor="@color/colorPrimary"
                 android:textSize="12sp"
                 android:visibility="invisible" />
 
@@ -219,8 +237,10 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 android:layout_marginStart="20dp"
+                android:background="@color/colorAccent"
                 android:padding="5dp"
                 android:text="@string/prev"
+                android:textColor="@color/colorPrimary"
                 android:textSize="12sp"
                 android:visibility="invisible" />
         </FrameLayout>

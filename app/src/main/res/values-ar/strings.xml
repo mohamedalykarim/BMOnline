@@ -22,4 +22,10 @@
     <string name="data_loading">جاري تحميل البيانات..</string>
     <string name="wrong_credintial">يوجد خطا باسم المستخدم وكلمة المرور رجاء حاول مرة اخري</string>
     <string name="remember_username_and_password">تذكر اسم المستخدم وكلمة المرور</string>
+    <string name="please_enter_username_and_password">رجاء ادخال اسم المستخدم وكلمة المرور</string>
+    <string name="please_enter_username">رجاء ادخال اسم المستخدم</string>
+    <string name="please_enter_password">رجاء كتابة كلمة المرور</string>
+    <string name="designed">تم تصميم وبرمجة هذا التطبيق من خلال محمد علي</string>
+
+
 </resources>
